@@ -1,6 +1,6 @@
 from pathlib import Path
 from subprocess import call
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 
 import numpy as np
 
@@ -46,15 +46,20 @@ def get_icon_list(folder, include_variants=True):
     """Return a list of all the icon files in the given path, optionally including
     'variant' icons (those with overlaid smaller icons).
     """
+    icon_filenames = (tmp / 'fugue/FILENAME.txt').read_text('utf8').splitlines()
+    if folder == 'icons-shadowless':
+        # In the shadowless icons, this one is called 'application-plus-sub', probably
+        # in error:
+        i = icon_filenames.index('application-sub.png')
+        icon_filenames[i] = 'application-plus-sub.png'
     path = tmp / 'fugue' / folder
     if include_variants:
-        icons = [p for p in path.iterdir()]
+        icons = [path / name for name in icon_filenames]
     else:
-        icons = [p for p in path.iterdir() if '--' not in p.name]
+        icons = [path / name for name in icon_filenames if '--' not in name]
         # This is the only icon with a double-hyphen that is not a 'variant' icon. All
         # other variant icons are excluded by virtue of containing a double hyphen
         icons.append(path / 'exclamation--frame.png')
-    icons.sort(key=lambda p: p.stem)
     return icons
 
 
@@ -161,7 +166,6 @@ def add_variants(folder, outdir):
             upscaled_variant_icon,
         ]
     )
-            
 
 
 def upscale_icon_set(folder):
@@ -178,8 +182,10 @@ def upscale_icon_set(folder):
     base_icons = get_icon_list(folder, include_variants=False)
     green_montage = tmp / f"{folder}-montage-green.png"
     magenta_montage = tmp / f"{folder}-montage-magenta.png"
+    white_montage = tmp / f"{folder}-montage-white.png"
     make_montage(base_icons, green_montage, background_colour='green')
     make_montage(base_icons, magenta_montage, background_colour='magenta')
+    make_montage(base_icons, white_montage, background_colour='white')
 
     # Do the upscaling
     green_montage_2x = upscale(green_montage)
@@ -246,7 +252,7 @@ def upscale_icon_set(folder):
     call(
         [
             'convert',
-            *sorted(outdir.iterdir(), key=lambda p: p.stem),
+            *sorted(outdir.iterdir()),
             '-gravity',
             'center',
             '-crop',
@@ -267,13 +273,107 @@ def upscale_icon_set(folder):
         except FileNotFoundError:
             break
 
-
     add_variants(folder, outdir)
+
+
+def make_all_dot_png(folder):
+    N_ROWS = 150
+    N_COLS = 24
+
+    ICON_SIZE = 32
+    ICON_PADDING = 2
+    IMAGE_PADDING = 18
+
+    TEXT_PADDING = 8
+    TEXT_LENGTH = 198
+
+    FONT_SIZE = 19
+
+    image = Image.new(
+        "RGBA",
+        (
+            N_COLS * (ICON_SIZE + 2 * ICON_PADDING + TEXT_LENGTH + 2 * TEXT_PADDING)
+            + 2 * IMAGE_PADDING,
+            N_ROWS * (ICON_SIZE + 2 * ICON_PADDING) + 2 * IMAGE_PADDING,
+        ),
+        (255, 255, 255, 0),
+    )
+    draw = ImageDraw.Draw(image)
+    draw.fontmode = "L"
+    font = ImageFont.truetype("Ubuntu-R.ttf", FONT_SIZE)
+
+    x = IMAGE_PADDING
+    y = IMAGE_PADDING
+    icons = [p.stem for p in get_icon_list(folder)]
+
+    # Figure out the prefixes for each icon:
+    prefixes = {}
+    current_prefix = ''
+    for icon in icons:
+        if icon.startswith(current_prefix + '-'):
+            prefixes[icon] = current_prefix
+        else:
+            current_prefix = icon
+
+
+    for i, icon in enumerate(icons):
+        print(icon)
+        icon_image = Image.open(f'{folder}-2x/{icon}.png')
+        image.paste(icon_image, (x + ICON_PADDING, y + ICON_PADDING))
+        text = icon
+        while draw.textlength(text=text, font=font) > TEXT_LENGTH:
+            text = text[:-2] + '…'
+
+        # Does the icon have a prefix?
+        if icon in prefixes:
+            prefix = prefixes[icon]
+            suffix = text[len(prefix):]
+        else:
+            prefix, suffix = icon, None
+        draw.text(
+            (
+                x + 2 * ICON_PADDING + ICON_SIZE + TEXT_PADDING,
+                y + ICON_PADDING + ICON_SIZE // 2,
+            ),
+            prefix,
+            (0, 0, 0),
+            anchor="lm",
+            font=font,
+        )
+        if suffix:
+            text1_len = draw.textlength(text=prefix, font=font)
+            draw.text(
+                (
+                    x + 2 * ICON_PADDING + ICON_SIZE + TEXT_PADDING + text1_len,
+                    y + ICON_PADDING + ICON_SIZE // 2,
+                ),
+                suffix,
+                (160, 160, 160),
+                anchor="lm",
+                font=font,
+            )
+
+        y += ICON_SIZE + 2 * ICON_PADDING
+
+        if i % N_ROWS == N_ROWS - 1:
+            x += ICON_SIZE + 2 * ICON_PADDING + TEXT_LENGTH + 2 * TEXT_PADDING
+            y = IMAGE_PADDING
+
+    output_file = f"all{folder.lstrip('icons')}.png"
+    image.save(output_file)
+    call(['convert', output_file, '-background', 'white', '-flatten', output_file])
 
 
 if __name__ == '__main__':
     tmp = Path('tmp')
-    tmp.mkdir(exist_ok=True)
-    download_and_unzip()
-    upscale_icon_set('icons')
-    upscale_icon_set('icons-shadowless')
+    # tmp.mkdir(exist_ok=True)
+    # download_and_unzip()
+    # upscale_icon_set('icons')
+    # upscale_icon_set('icons-shadowless')
+    make_all_dot_png('icons')
+    make_all_dot_png('icons-shadowless')
+
+
+    # TODO:
+        # Overlays are a bit too small. Use the "small" icons, upsized? Are they bigger?
+        # "Key" icon is off to the side for variants, and overlays are on the bottom-right
