@@ -34,10 +34,10 @@ MIRRORED_PENCILS = [
 
 def download_and_unzip():
     """Download and unzip the fugue icon set source"""
-    FUGUE_ZIP = Path(FUGUE_URL.split('/')[-1])
-    FUGUE = Path('fugue')
+    FUGUE_ZIP = tmp / 'fugue.zip'
+    FUGUE = tmp / 'fugue'
     if not FUGUE_ZIP.exists():
-        call(['wget', FUGUE_URL])
+        call(['wget', '-O', FUGUE_ZIP, FUGUE_URL])
     if not FUGUE.exists():
         call(['unzip', FUGUE_ZIP, '-d', FUGUE])
 
@@ -46,7 +46,7 @@ def get_icon_list(folder, include_variants=True):
     """Return a list of all the icon files in the given path, optionally including
     'variant' icons (those with overlaid smaller icons).
     """
-    path = Path('fugue', folder)
+    path = tmp / 'fugue' / folder
     if include_variants:
         icons = [p for p in path.iterdir()]
     else:
@@ -54,7 +54,7 @@ def get_icon_list(folder, include_variants=True):
         # This is the only icon with a double-hyphen that is not a 'variant' icon. All
         # other variant icons are excluded by virtue of containing a double hyphen
         icons.append(path / 'exclamation--frame.png')
-    icons.sort()
+    icons.sort(key=lambda p: p.stem)
     return icons
 
 
@@ -101,13 +101,20 @@ def add_variants(folder, outdir):
     # Make a horizontally-flipped pencil overlay icon:
     mirrored_pencil = tmp / "pencil-mirrored.png"
     if not mirrored_pencil.exists():
-        call(['convert', '-flop', 'fugue/icons-shadowless/pencil.png', mirrored_pencil])
+        call(
+            [
+                'convert',
+                '-flop',
+                tmp / 'fugue/icons-shadowless/pencil.png',
+                mirrored_pencil,
+            ]
+        )
 
     for upscaled_base_icon in list(outdir.iterdir()):
         for variant in VARIANTS:
             variant_name = f"{upscaled_base_icon.stem}--{variant}.png"
-            base_icon = Path("fugue", folder, upscaled_base_icon.name)
-            variant_icon = Path("fugue", folder, variant_name)
+            base_icon = Path(tmp, "fugue", folder, upscaled_base_icon.name)
+            variant_icon = Path(tmp, "fugue", folder, variant_name)
             # Does this variant exist?
             if not variant_icon.exists():
                 continue
@@ -122,7 +129,7 @@ def add_variants(folder, outdir):
             if variant == 'pencil' and upscaled_base_icon.stem in MIRRORED_PENCILS:
                 overlay_filename = mirrored_pencil
             else:
-                overlay_filename = f"fugue/icons-shadowless/{variant}.png"
+                overlay_filename = tmp / f"fugue/icons-shadowless/{variant}.png"
             upscaled_variant_icon = outdir / variant_name
             gravity = ['NorthWest', 'NorthEast', 'SouthWest', 'SouthEast'][q.argmax()]
 
@@ -139,7 +146,7 @@ def add_variants(folder, outdir):
             )
 
     # There is one icon with a variant that does not follow the naming conventions:
-    overlay_filename = "fugue/icons-shadowless/pencil.png"
+    overlay_filename = tmp / "fugue/icons-shadowless/pencil.png"
     upscaled_base_icon = outdir / "layout-hf-2.png"
     upscaled_variant_icon = outdir / "layout-design.png"
     gravity = "SouthWest"
@@ -239,7 +246,7 @@ def upscale_icon_set(folder):
     call(
         [
             'convert',
-            *sorted(outdir.iterdir()),
+            *sorted(outdir.iterdir(), key=lambda p: p.stem),
             '-gravity',
             'center',
             '-crop',
