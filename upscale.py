@@ -98,10 +98,23 @@ def rebin(arr, new_shape):
     return arr.reshape(shape).mean(-1).mean(1)
 
 
-def add_variants(folder, outdir):
+def roll(im, delta):
+    """Roll an image sideways."""
+    xsize, ysize = im.size
+    delta = delta % xsize
+    part1 = im.crop((0, 0, delta, ysize))
+    part2 = im.crop((delta, 0, xsize, ysize))
+    im.paste(part1, (xsize - delta, 0, xsize, ysize))
+    im.paste(part2, (0, 0, xsize - delta, ysize))
+
+    return im
+
+def make_variants(folder):
     """Apply overlays to produce variant icons. We have high-res versions of the overlay
     icons used for the variants already, so this does a better job than getting the
     upscaler to work with the variant icons directly"""
+
+    outdir = Path(f"{folder}-2x")
 
     # Make a horizontally-flipped pencil overlay icon:
     mirrored_pencil = tmp / "pencil-mirrored.png"
@@ -138,6 +151,18 @@ def add_variants(folder, outdir):
             upscaled_variant_icon = outdir / variant_name
             gravity = ['NorthWest', 'NorthEast', 'SouthWest', 'SouthEast'][q.argmax()]
 
+            if upscaled_base_icon.stem == 'key':
+                # Key variants have the main icon moved 4x to the left, and gravity is
+                # SouthEast:
+                key = Image.open(upscaled_base_icon)
+                key = roll(key, 6)
+                base_icon_file = tmp / f'{folder}-key-rolled.png'
+                key.save(base_icon_file)
+                gravity = 'SouthEast'
+            else:
+                base_icon_file = upscaled_base_icon
+                
+
             call(
                 [
                     'magick',
@@ -145,7 +170,7 @@ def add_variants(folder, outdir):
                     '-gravity',
                     gravity,
                     overlay_filename,
-                    upscaled_base_icon,
+                    base_icon_file,
                     upscaled_variant_icon,
                 ]
             )
@@ -273,8 +298,6 @@ def upscale_icon_set(folder):
         except FileNotFoundError:
             break
 
-    add_variants(folder, outdir)
-
 
 def make_all_dot_png(folder):
     N_ROWS = 150
@@ -366,14 +389,17 @@ def make_all_dot_png(folder):
 
 if __name__ == '__main__':
     tmp = Path('tmp')
-    # tmp.mkdir(exist_ok=True)
-    # download_and_unzip()
-    # upscale_icon_set('icons')
-    # upscale_icon_set('icons-shadowless')
+    tmp.mkdir(exist_ok=True)
+    download_and_unzip()
+
+    upscale_icon_set('icons')
+    make_variants('icons')
     make_all_dot_png('icons')
+
+    upscale_icon_set('icons-shadowless')
+    make_variants('icons-shadowless')
     make_all_dot_png('icons-shadowless')
 
 
     # TODO:
         # Overlays are a bit too small. Use the "small" icons, upsized? Are they bigger?
-        # "Key" icon is off to the side for variants, and overlays are on the bottom-right
