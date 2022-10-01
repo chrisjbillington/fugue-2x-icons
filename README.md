@@ -24,18 +24,12 @@ The code in this repository is licensed under the MIT license - see
 Comparison
 ----------
 
-Sample of original Fugue icons:
+Here is an example showing some of the original 16x16 Fugue icons and their 32x32
+upscaled equivalents:
 
-[<img src="./mini-preview-orig.png"
-      srcset="./mini-preview-orig.png 1x ./mini-preview-orig.png 2x"/>
-  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-orig.png)
-
-Sample of Fugue-2x upscaled icons:
-
-[<img src="./mini-preview-icons-2x.png"
-      srcset="./mini-preview-icons-2x.png 1x ./mini-preview-icons-2x.png 2x"/>
-  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-icons-2x.png)
-
+[<img src="./comparison.png"
+      srcset="./comparison.png 1x ./comparison.png 2x"/>
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/comparison.png)
 
 Why?
 ----

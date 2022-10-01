@@ -451,6 +451,38 @@ def make_preview(folder, mini_preview=False):
     call(['convert', output_file, '-background', 'white', '-flatten', output_file])
 
 
+def make_comparison():
+
+    output_name = "comparison.png"
+    print(f"making {output_name}")
+    names = Path('mini-preview-icons.txt').read_text('utf8').splitlines()
+
+    # Make it a multiple of 8
+    names.remove('user-detective')
+
+    icons = []
+    for name in names:
+        icons.append(tmp / f'fugue/icons/{name}.png')
+        icons.append(f'icons-2x/{name}.png')
+    call(
+        [
+            'magick',
+            'montage',
+            '-tile',
+            '16x0',
+            '-background',
+            'white',
+            '-geometry',
+            '+2+2',
+            '-filter',
+            'box',
+            '-gravity',
+            'North',
+            *icons,
+            output_name,
+        ]
+    )
+
 if __name__ == '__main__':
     tmp = Path('tmp')
     tmp.mkdir(exist_ok=True)
@@ -465,3 +497,5 @@ if __name__ == '__main__':
     make_preview('icons-shadowless')
 
     make_preview('icons', mini_preview=True)
+
+    make_comparison()
