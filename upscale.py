@@ -42,7 +42,7 @@ ROLLED_VARIANTS = {
 
 # Icons whose name have a common prefix with the icon above them in the icon list, but
 # which should not be treated as sharing a prefix with them (for the purposes of
-# rendering all.png)
+# rendering all-2x.png)
 PREFIX_EXCEPTIONS = [
     'home-for-sale-sign',
     'ice-cream',
@@ -363,7 +363,7 @@ def make_preview(folder, mini_preview=False):
         N_COLS = 24
         IMAGE_PADDING = 18
         RIGHT_CROP = 0
-        output_file = f"all{folder.lstrip('icons')}.png"
+        output_file = f"all-2x{folder.lstrip('icons')}.png"
         icons = all_icons
 
     ICON_SIZE = 32

@@ -2,11 +2,11 @@ Fugue-2x icons
 ==============
 
 This is a 2x upscaled version of the [Fugue icon set](https://p.yusukekamiyamane.com/),
-by Yusuke Kamiyamane.
+a set of 3,750 icons by Yusuke Kamiyamane.
 
-This repository contains 32x32 upscaled versions of all 16x16 Fugue icons. As such,
-these icons are appropriate for use at small sizes on high-DPI displays, e.g. at a size
-of 16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels.
+This repository contains 32x32 upscaled versions of all original 16x16 Fugue icons. As
+such, these icons are appropriate for use at small sizes on high-DPI displays, e.g. at a
+size of 16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels.
 
 The Fugue icon set is licensed under a [creative-commons attribution
 license](http://creativecommons.org/licenses/by/3.0/), and may be used with
@@ -17,15 +17,22 @@ license](https://p.yusukekamiyamane.com/icons/license/).
 The code in this repository is licensed under the MIT license - see
 [`LICENSE-CODE.md`](LICENSE-CODE.md).
 
-[Download icons](http://github.com/chrisjbillington/fugue-2x-icons/archive/master.zip)
+[<img src="./mini-preview-icons-2x.png"
+      srcset="./mini-preview-icons-2x.png 1x ./mini-preview-icons-2x.png 2x"/>
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/comparison.png)
 
-[Preview all icons](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/all.png) (9MB 6036x5346 png)
+[Preview all
+icons](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/all-2x.png) (9MB
+6036x5346 png)
+
+[Download Fugue-2x icons](http://github.com/chrisjbillington/fugue-2x-icons/archive/master.zip)
+
 
 Comparison
 ----------
 
-Here is an example showing some of the original 16x16 Fugue icons (at 2x scale) and
-their 32x32 upscaled equivalents:
+Here is an example showing some of the original 16x16 Fugue icons (shown at 2x scale)
+and their 32x32 upscaled equivalents:
 
 [<img src="./comparison.png"
       srcset="./comparison.png 1x ./comparison.png 2x"/>
