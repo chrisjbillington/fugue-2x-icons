@@ -24,8 +24,8 @@ The code in this repository is licensed under the MIT license - see
 Comparison
 ----------
 
-Here is an example showing some of the original 16x16 Fugue icons and their 32x32
-upscaled equivalents:
+Here is an example showing some of the original 16x16 Fugue icons (at 2x scale) and
+their 32x32 upscaled equivalents:
 
 [<img src="./comparison.png"
       srcset="./comparison.png 1x ./comparison.png 2x"/>

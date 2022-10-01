@@ -473,7 +473,7 @@ def make_comparison():
             '-background',
             'white',
             '-geometry',
-            '+2+2',
+            '32x32+2+2',
             '-filter',
             'box',
             '-gravity',
