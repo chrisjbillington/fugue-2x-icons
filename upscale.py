@@ -355,8 +355,8 @@ def make_preview(folder, mini_preview=False):
     COPYRIGHT_HEIGHT = 2 * 110
 
     if mini_preview:
-        N_ROWS = 13
-        N_COLS = 5
+        N_ROWS = 22
+        N_COLS = 3
         IMAGE_PADDING = 0
         RIGHT_CROP = 6
         BOTTOM_PADDING = 0
@@ -524,16 +524,16 @@ def make_comparison():
 if __name__ == '__main__':
     tmp = Path('tmp')
     tmp.mkdir(exist_ok=True)
-    # download_and_unzip()
+    download_and_unzip()
 
-    # upscale_icon_set('icons')
-    # make_variants('icons')
+    upscale_icon_set('icons')
+    make_variants('icons')
     make_preview('icons')
 
-    # upscale_icon_set('icons-shadowless')
-    # make_variants('icons-shadowless')
+    upscale_icon_set('icons-shadowless')
+    make_variants('icons-shadowless')
     make_preview('icons-shadowless')
 
-    # make_preview('icons', mini_preview=True)
+    make_preview('icons', mini_preview=True)
 
     make_comparison()
