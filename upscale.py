@@ -31,6 +31,12 @@ MIRRORED_PENCILS = [
     "lightning",
 ]
 
+# Icons whose overlays have the main icon horixontally displaced by some number of
+# pixels
+ROLLED_VARIANTS = {
+    'key': {'plus': 2, 'arrow': 3, 'minus': 2, 'pencil': 3, 'exclamation': 3},
+    'funnel': {'plus': 1, 'arrow': 1, 'minus': 1, 'pencil': 1, 'exclamation': 1},
+}
 
 def download_and_unzip():
     """Download and unzip the fugue icon set source"""
@@ -129,39 +135,45 @@ def make_variants(folder):
         )
 
     for upscaled_base_icon in list(outdir.iterdir()):
+        base_icon = Path(tmp, "fugue", folder, upscaled_base_icon.name)
+        base_name = upscaled_base_icon.stem
+
         for variant in VARIANTS:
-            variant_name = f"{upscaled_base_icon.stem}--{variant}.png"
-            base_icon = Path(tmp, "fugue", folder, upscaled_base_icon.name)
+            variant_name = f"{base_name}--{variant}.png"
             variant_icon = Path(tmp, "fugue", folder, variant_name)
             # Does this variant exist?
             if not variant_icon.exists():
                 continue
+
+            # Create a version of the upscaled base icon horizontally displaced if
+            # needed:
+            if base_name in ROLLED_VARIANTS:
+                img = Image.open(upscaled_base_icon)
+                img = roll(img, 2 * ROLLED_VARIANTS[base_name][variant])
+                base_icon_file = tmp / f'{folder}-{base_name}-{variant}-rolled.png'
+                img.save(base_icon_file)
+            else:
+                base_icon_file = upscaled_base_icon
+
+            # The original base icon, also potentially horizontally displaced
+            base_image = Image.open(base_icon)
+            if base_name in ROLLED_VARIANTS:
+                base_image = roll(base_image, ROLLED_VARIANTS[base_name][variant])
+            base_image = np.array(base_image)
+
             # Determine which quadrant of the image the overlay icon is in, by taking a
             # difference image and rebinning to 2x2 px
-            base_image = np.array(Image.open(base_icon))
             variant_image = np.array(Image.open(variant_icon))
             difference_image = abs(variant_image - base_image).mean(axis=-1)
             q = rebin(difference_image, (2, 2))
 
             # Compose the overlay icon on top:
-            if variant == 'pencil' and upscaled_base_icon.stem in MIRRORED_PENCILS:
-                overlay_filename = mirrored_pencil
+            if variant == 'pencil' and base_name in MIRRORED_PENCILS:
+                overlay_filename = "overlay-pencil-mirrored.png"
             else:
-                overlay_filename = tmp / f"fugue/icons-shadowless/{variant}.png"
+                overlay_filename = f"overlay-{variant}.png"
             upscaled_variant_icon = outdir / variant_name
             gravity = ['NorthWest', 'NorthEast', 'SouthWest', 'SouthEast'][q.argmax()]
-
-            if upscaled_base_icon.stem == 'key':
-                # Key variants have the main icon moved 4x to the left, and gravity is
-                # SouthEast:
-                key = Image.open(upscaled_base_icon)
-                key = roll(key, 6)
-                base_icon_file = tmp / f'{folder}-key-rolled.png'
-                key.save(base_icon_file)
-                gravity = 'SouthEast'
-            else:
-                base_icon_file = upscaled_base_icon
-                
 
             call(
                 [
@@ -399,7 +411,3 @@ if __name__ == '__main__':
     upscale_icon_set('icons-shadowless')
     make_variants('icons-shadowless')
     make_all_dot_png('icons-shadowless')
-
-
-    # TODO:
-        # Overlays are a bit too small. Use the "small" icons, upsized? Are they bigger?
