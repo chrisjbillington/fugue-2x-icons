@@ -1,11 +1,12 @@
 from pathlib import Path
 from subprocess import call
+from urllib.request import urlopen
+from zipfile import ZipFile
 from PIL import Image, ImageFont, ImageDraw
 
 import numpy as np
 
 FUGUE_URL = "https://p.yusukekamiyamane.com/icons/downloads/fugue-icons-3.5.6-src.zip"
-
 
 VARIANTS = [
     "arrow",
@@ -56,9 +57,13 @@ def download_and_unzip():
     FUGUE_ZIP = tmp / 'fugue.zip'
     FUGUE = tmp / 'fugue'
     if not FUGUE_ZIP.exists():
-        call(['wget', '-O', FUGUE_ZIP, FUGUE_URL])
+        print(f"downloading {FUGUE_URL} as {FUGUE_ZIP}")
+        with open(FUGUE_ZIP, 'wb') as f:
+            f.write(urlopen(FUGUE_URL).read())
     if not FUGUE.exists():
-        call(['unzip', FUGUE_ZIP, '-d', FUGUE])
+        print(f"decompressing {FUGUE_ZIP} to {FUGUE}")
+        zipfile = ZipFile(FUGUE_ZIP)
+        zipfile.extractall(path=FUGUE)
 
 
 def get_icon_list(folder, include_variants=True):
@@ -85,6 +90,7 @@ def get_icon_list(folder, include_variants=True):
 def make_montage(icons, output_name, background_colour="none"):
     """Make a grid of the given icons 50 columns wide with a 2px border around each
     icon"""
+    print(f"Creating montage {output_name}")
     call(
         [
             'magick',
@@ -102,6 +108,7 @@ def make_montage(icons, output_name, background_colour="none"):
 
 
 def upscale(infile):
+    print(f"Upscaling {infile}")
     outfile = infile.parent / f"{infile.stem}-2x.png"
     call(['waifu2x-ncnn-vulkan', '-i', infile, '-o', outfile, '-n', '-1', '-x'])
     return outfile
@@ -133,6 +140,7 @@ def make_variants(folder):
     icons used for the variants already, so this does a better job than getting the
     upscaler to work with the variant icons directly"""
 
+    print(f"Making variants for {folder}")
     outdir = Path(f"{folder}-2x")
 
     # Make a horizontally-flipped pencil overlay icon:
@@ -249,6 +257,11 @@ def upscale_icon_set(folder):
     # Do the background recovery:
     alpha_image = tmp / f"{folder}-2x-alpha.png"
 
+    print(
+        "Reconstructing image with alpha channel from"
+        + f"{green_montage_2x} and {magenta_montage_2x}"
+    )
+
     # Extract alpha
     call(
         [
@@ -292,6 +305,8 @@ def upscale_icon_set(folder):
 
     # Remove alpha garbage (nozero pixel values when alpha is near-zero):
     call(['convert', montage_2x, '-fx', 'a<2/128 ? 0 : u', montage_2x])
+
+    print(f"Extracting individual icons from montage {montage_2x}")
 
     # Crop out the individual icons to separate files once more
     outdir = Path(f"{folder}-2x")
@@ -345,6 +360,10 @@ def make_all_dot_png(folder):
 
     FONT_SIZE = 19
 
+    output_file = f"all{folder.lstrip('icons')}.png"
+
+    print(f"Making {output_file}")
+    
     image = Image.new(
         "RGBA",
         (
@@ -374,7 +393,6 @@ def make_all_dot_png(folder):
             current_prefix = icon
 
     for i, icon in enumerate(icons):
-        print(icon)
         icon_image = Image.open(f'{folder}-2x/{icon}.png')
         image.paste(icon_image, (x + ICON_PADDING, y + ICON_PADDING))
         text = icon
@@ -416,7 +434,6 @@ def make_all_dot_png(folder):
             x += ICON_SIZE + 2 * ICON_PADDING + TEXT_LENGTH + 2 * TEXT_PADDING
             y = IMAGE_PADDING
 
-    output_file = f"all{folder.lstrip('icons')}.png"
     image.save(output_file)
     call(['convert', output_file, '-background', 'white', '-flatten', output_file])
 

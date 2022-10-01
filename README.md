@@ -64,6 +64,9 @@ of the small overlay icons.
 Rebuilding the icons
 --------------------
 
+If you just want to use the icons, they are already built and available as files in this
+repository, so you don't need to rebuild them. This is just for reference.
+
 The script used to upscale the icons from the original Fugue source is `upscale.py`. To
 run it, you'll need the following requirements:
 
@@ -78,4 +81,4 @@ python upscale.py
 ```
 
 Tested on Arch Linux with `waifu2x-ncnn-vulkan` version `20220728`, `imagemagick`
-version`7.1.0` and Python `3.10.7`. This takes 
+version`7.1.0` and Python `3.10.7`. This took seven minutes on my system.
