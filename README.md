@@ -19,13 +19,13 @@ The code in this repository is licensed under the MIT license - see
 
 [<img src="./mini-preview-icons-2x.png"
       srcset="./mini-preview-icons-2x.png 1x ./mini-preview-icons-2x.png 2x"/>
-  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/comparison.png)
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-icons-2x.png)
 
-[Preview all
-icons](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/all-2x.png) (9MB
+[**Preview all
+icons**](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/all-2x.png) (9MB
 6036x5346 png)
 
-[Download Fugue-2x icons](http://github.com/chrisjbillington/fugue-2x-icons/archive/master.zip)
+[**Download Fugue-2x icons**](http://github.com/chrisjbillington/fugue-2x-icons/archive/master.zip)
 
 
 Comparison

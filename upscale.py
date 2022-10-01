@@ -354,7 +354,7 @@ def make_preview(folder, mini_preview=False):
     if mini_preview:
         N_ROWS = 13
         N_COLS = 5
-        IMAGE_PADDING = -2
+        IMAGE_PADDING = 0
         RIGHT_CROP = 6
         output_file = f"mini-preview-{folder}-2x.png"
         icons = Path('mini-preview-icons.txt').read_text('utf8').splitlines()
