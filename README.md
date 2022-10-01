@@ -10,18 +10,22 @@ of 16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels.
 
 [Download icons](http://github.com/chrisjbillington/fugue-2x-icons/archive/master.zip)
 
-[Preview all icons (9MB 6036x5346 png)](http://github.com/chrisjbillington/fugue-2x-icons/archive/all.png)
+[Preview all icons](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/all.png) (9MB 6036x5346 png)
 
 Comparison
 ----------
 
-Sample of original fugue icons (shown at 2x scale):
+Sample of original Fugue icons:
 
-![mini-preview-orig-2x.png](mini-preview-orig-2x.png)
+[<img src="./mini-preview-orig.png"
+      srcset="./mini-preview-orig.png 1x ./mini-preview-orig.png 2x"/>
+  ](./mini-preview-orig.png)
 
 Fugue-2x upscaled icons:
 
-![mini-preview-icons-2x.png](mini-preview-icons-2x.png)
+[<img src="./mini-preview-icons-2x.png"
+      srcset="./mini-preview-icons-2x.png 1x ./mini-preview-icons-2x.png 2x"/>
+  ](./mini-preview-icons-2x.png)
 
 Licencing
 ---------
