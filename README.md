@@ -4,21 +4,36 @@ Fugue-2x icons
 This is a 2x upscaled version of the [Fugue icon set](https://p.yusukekamiyamane.com/),
 by Yusuke Kamiyamane.
 
-This repository contains upscaled versions of all 16x16 Fugue icons. As such, these
-icons are appropriate for use at small sizes on high-dpi displays, e.g. at a size of
-16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels. 
+This repository contains 32x32 upscaled versions of all 16x16 Fugue icons. As such,
+these icons are appropriate for use at small sizes on high-DPI displays, e.g. at a size
+of 16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels.
+
+[Download icons](http://github.com/chrisjbillington/fugue-2x-icons/archive/master.zip)
+
+[Preview all icons (9MB 6036x5346 png)](http://github.com/chrisjbillington/fugue-2x-icons/archive/all.png)
+
+Comparison
+----------
+
+Sample of original fugue icons (shown at 2x scale):
+
+![mini-preview-orig-2x.png](mini-preview-orig-2x.png)
+
+Fugue-2x upscaled icons:
+
+![mini-preview-icons-2x.png](mini-preview-icons-2x.png)
 
 Licencing
 ---------
-
-The code in this repository is licensed under the MIT license - see
-[`LICENSE-CODE.md`](LICENSE-CODE.md).
 
 The Fugue icon set is licensed under a [creative-commons attribution
 license](http://creativecommons.org/licenses/by/3.0/), and may be used with
 [attribution](https://p.yusukekamiyamane.com/icons/attribution/) to the author, Yusuke
 Kamiyamane. If you do not wish to provide attribution, you may [purchase a
 license](https://p.yusukekamiyamane.com/icons/license/) from the author.
+
+The code in this repository is licensed under the MIT license - see
+[`LICENSE-CODE.md`](LICENSE-CODE.md).
 
 Why?
 ----
@@ -37,8 +52,8 @@ photoshop files in the Fugue
 [source](https://p.yusukekamiyamane.com/icons/downloads/fugue-icons-3.5.6-src.zip)) that
 makes them less than ideal for use directly.
 
-It turns out that with some care, deep-learning-based upscaling software can now produce
-quite good results for this icon set. So here we are.
+It turns out that with some trial-and-error, deep-learning-based upscaling software can
+now be coaxed into producing quite good results for this icon set. So here we are.
 
 Methodology
 -----------

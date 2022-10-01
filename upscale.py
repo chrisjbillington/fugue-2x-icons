@@ -347,28 +347,41 @@ def upscale_icon_set(folder):
             break
 
 
-def make_all_dot_png(folder):
-    N_ROWS = 150
-    N_COLS = 24
+def make_preview(folder, mini_preview=False):
+
+    all_icons = [p.stem for p in get_icon_list(folder)]
+
+    if mini_preview:
+        N_ROWS = 13
+        N_COLS = 5
+        IMAGE_PADDING = -2
+        RIGHT_CROP = 6
+        output_file = f"mini-preview-{folder}-2x.png"
+        icons = Path('mini-preview-icons.txt').read_text('utf8').splitlines()
+    else:
+        N_ROWS = 150
+        N_COLS = 24
+        IMAGE_PADDING = 18
+        RIGHT_CROP = 0
+        output_file = f"all{folder.lstrip('icons')}.png"
+        icons = all_icons
 
     ICON_SIZE = 32
     ICON_PADDING = 2
-    IMAGE_PADDING = 18
 
     TEXT_PADDING = 8
     TEXT_LENGTH = 198
 
     FONT_SIZE = 19
 
-    output_file = f"all{folder.lstrip('icons')}.png"
-
     print(f"Making {output_file}")
-    
+
     image = Image.new(
         "RGBA",
         (
             N_COLS * (ICON_SIZE + 2 * ICON_PADDING + TEXT_LENGTH + 2 * TEXT_PADDING)
-            + 2 * IMAGE_PADDING,
+            + 2 * IMAGE_PADDING
+            - RIGHT_CROP,
             N_ROWS * (ICON_SIZE + 2 * ICON_PADDING) + 2 * IMAGE_PADDING,
         ),
         (255, 255, 255, 0),
@@ -379,12 +392,12 @@ def make_all_dot_png(folder):
 
     x = IMAGE_PADDING
     y = IMAGE_PADDING
-    icons = [p.stem for p in get_icon_list(folder)]
+    
 
     # Figure out the prefixes for each icon:
     prefixes = {}
     current_prefix = ''
-    for icon in icons:
+    for icon in all_icons:
         if icon in PREFIX_EXCEPTIONS:
             current_prefix = icon
         elif icon.startswith(current_prefix + '-'):
@@ -445,8 +458,10 @@ if __name__ == '__main__':
 
     upscale_icon_set('icons')
     make_variants('icons')
-    make_all_dot_png('icons')
+    make_preview('icons')
 
     upscale_icon_set('icons-shadowless')
     make_variants('icons-shadowless')
-    make_all_dot_png('icons-shadowless')
+    make_preview('icons-shadowless')
+
+    make_preview('icons', mini_preview=True)
