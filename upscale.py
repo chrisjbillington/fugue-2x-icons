@@ -36,7 +36,20 @@ MIRRORED_PENCILS = [
 ROLLED_VARIANTS = {
     'key': {'plus': 2, 'arrow': 3, 'minus': 2, 'pencil': 3, 'exclamation': 3},
     'funnel': {'plus': 1, 'arrow': 1, 'minus': 1, 'pencil': 1, 'exclamation': 1},
+    'music': {'plus': 3, 'arrow': 3, 'minus': 3, 'pencil': 3, 'exclamation': -2}
 }
+
+# Icons whose name have a common prefix with the icon above them in the icon list, but
+# which should not be treated as sharing a prefix with them (for the purposes of
+# rendering all.png)
+PREFIX_EXCEPTIONS = [
+    'home-for-sale-sign',
+    'ice-cream',
+    'road-sign',
+    'sql-join',
+    'ui-panel-resize',
+]
+
 
 def download_and_unzip():
     """Download and unzip the fugue icon set source"""
@@ -161,17 +174,24 @@ def make_variants(folder):
                 base_image = roll(base_image, ROLLED_VARIANTS[base_name][variant])
             base_image = np.array(base_image)
 
+            # Multiply through by alpha
+            base_image = base_image[:, :, :3] * (base_image[:, :, 3, np.newaxis] / 255)
+
             # Determine which quadrant of the image the overlay icon is in, by taking a
             # difference image and rebinning to 2x2 px
             variant_image = np.array(Image.open(variant_icon))
+            # Multiply through by alpha
+            variant_image = variant_image[:, :, :3] * (
+                variant_image[:, :, 3, np.newaxis] / 255
+            )
             difference_image = abs(variant_image - base_image).mean(axis=-1)
             q = rebin(difference_image, (2, 2))
 
             # Compose the overlay icon on top:
             if variant == 'pencil' and base_name in MIRRORED_PENCILS:
-                overlay_filename = "overlay-pencil-mirrored.png"
+                overlay_filename = "overlays/pencil-mirrored.png"
             else:
-                overlay_filename = f"overlay-{variant}.png"
+                overlay_filename = f"overlays/{variant}.png"
             upscaled_variant_icon = outdir / variant_name
             gravity = ['NorthWest', 'NorthEast', 'SouthWest', 'SouthEast'][q.argmax()]
 
@@ -188,7 +208,7 @@ def make_variants(folder):
             )
 
     # There is one icon with a variant that does not follow the naming conventions:
-    overlay_filename = tmp / "fugue/icons-shadowless/pencil.png"
+    overlay_filename = "overlays/pencil.png"
     upscaled_base_icon = outdir / "layout-hf-2.png"
     upscaled_variant_icon = outdir / "layout-design.png"
     gravity = "SouthWest"
@@ -214,15 +234,13 @@ def upscale_icon_set(folder):
 
     # waifu2x works best on a single image with all the icons in it, I suppose it gives
     # it more context to work with. So let's make single images containing all the icons
-    # to upscale. We'll then extract the results
+    # to upscale. We'll then extract the results.
 
     base_icons = get_icon_list(folder, include_variants=False)
     green_montage = tmp / f"{folder}-montage-green.png"
     magenta_montage = tmp / f"{folder}-montage-magenta.png"
-    white_montage = tmp / f"{folder}-montage-white.png"
     make_montage(base_icons, green_montage, background_colour='green')
     make_montage(base_icons, magenta_montage, background_colour='magenta')
-    make_montage(base_icons, white_montage, background_colour='white')
 
     # Do the upscaling
     green_montage_2x = upscale(green_montage)
@@ -271,6 +289,9 @@ def upscale_icon_set(folder):
             ]
         )
     call(['convert', '-average', *decomposed_images, montage_2x])
+
+    # Remove alpha garbage (nozero pixel values when alpha is near-zero):
+    call(['convert', montage_2x, '-fx', 'a<2/128 ? 0 : u', montage_2x])
 
     # Crop out the individual icons to separate files once more
     outdir = Path(f"{folder}-2x")
@@ -345,11 +366,12 @@ def make_all_dot_png(folder):
     prefixes = {}
     current_prefix = ''
     for icon in icons:
-        if icon.startswith(current_prefix + '-'):
+        if icon in PREFIX_EXCEPTIONS:
+            current_prefix = icon
+        elif icon.startswith(current_prefix + '-'):
             prefixes[icon] = current_prefix
         else:
             current_prefix = icon
-
 
     for i, icon in enumerate(icons):
         print(icon)
