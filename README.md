@@ -28,13 +28,13 @@ Sample of original Fugue icons:
 
 [<img src="./mini-preview-orig.png"
       srcset="./mini-preview-orig.png 1x ./mini-preview-orig.png 2x"/>
-  ](./mini-preview-orig.png)
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-orig.png)
 
-Fugue-2x upscaled icons:
+Sample of Fugue-2x upscaled icons:
 
 [<img src="./mini-preview-icons-2x.png"
       srcset="./mini-preview-icons-2x.png 1x ./mini-preview-icons-2x.png 2x"/>
-  ](./mini-preview-icons-2x.png)
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-icons-2x.png)
 
 
 Why?
@@ -60,8 +60,9 @@ now be coaxed into producing quite good results for this icon set. So here we ar
 Methodology
 -----------
 
-The icons were upscaled using `waifu2x`, a neural-network-based upsampler trained on
-anime-style art.
+The icons were upscaled using
+[`waifu2x-ncnn-vulkan`](https://github.com/nihui/waifu2x-ncnn-vulkan), a
+neural-network-based upsampler trained on anime-style art.
 
 This required some tricks.
 
@@ -88,8 +89,8 @@ The script used to upscale the icons from the original Fugue source is `upscale.
 run it, you'll need the following requirements:
 
 * Python with the `numpy` and `pillow` packages installed
-* `waifu2x-ncnn-vulkan`
-* `imagemagick`
+* [`waifu2x-ncnn-vulkan`](https://github.com/nihui/waifu2x-ncnn-vulkan)
+* [`imagemagick`](https://imagemagick.org/index.php)
 
 Then run:
 
