@@ -351,11 +351,15 @@ def make_preview(folder, mini_preview=False):
 
     all_icons = [p.stem for p in get_icon_list(folder)]
 
+    COPYRIGHT_WIDTH = 2 *350
+    COPYRIGHT_HEIGHT = 2 * 110
+
     if mini_preview:
         N_ROWS = 13
         N_COLS = 5
         IMAGE_PADDING = 0
         RIGHT_CROP = 6
+        BOTTOM_PADDING = 0
         output_file = f"mini-preview-{folder}-2x.png"
         icons = Path('mini-preview-icons.txt').read_text('utf8').splitlines()
     else:
@@ -363,6 +367,7 @@ def make_preview(folder, mini_preview=False):
         N_COLS = 24
         IMAGE_PADDING = 18
         RIGHT_CROP = 0
+        BOTTOM_PADDING = COPYRIGHT_HEIGHT
         output_file = f"all-2x{folder.lstrip('icons')}.png"
         icons = all_icons
 
@@ -382,7 +387,9 @@ def make_preview(folder, mini_preview=False):
             N_COLS * (ICON_SIZE + 2 * ICON_PADDING + TEXT_LENGTH + 2 * TEXT_PADDING)
             + 2 * IMAGE_PADDING
             - RIGHT_CROP,
-            N_ROWS * (ICON_SIZE + 2 * ICON_PADDING) + 2 * IMAGE_PADDING,
+            N_ROWS * (ICON_SIZE + 2 * ICON_PADDING)
+            + 2 * IMAGE_PADDING
+            + BOTTOM_PADDING,
         ),
         (255, 255, 255, 0),
     )
@@ -448,6 +455,37 @@ def make_preview(folder, mini_preview=False):
             y = IMAGE_PADDING
 
     image.save(output_file)
+
+    if not mini_preview:
+        # Add copyright:
+        copyright = tmp / "copyright.png"
+        call(
+            [
+                'convert',
+                tmp / 'fugue/all.png',
+                '-gravity',
+                'SouthWest',
+                '-crop',
+                f"{COPYRIGHT_WIDTH//2}x{COPYRIGHT_HEIGHT//2}+0+0",
+                '+repage',
+                copyright,
+            ]
+        )
+        call(['convert', copyright, '-background', 'white', '-flatten', copyright])
+        copyright_2x = upscale(copyright)
+        call(
+                [
+                    'magick',
+                    'composite',
+                    '-gravity',
+                    'SouthWest',
+                    copyright_2x,
+                    output_file,
+                    output_file,
+                ]
+            )
+
+    # Flatten
     call(['convert', output_file, '-background', 'white', '-flatten', output_file])
 
 
@@ -486,16 +524,16 @@ def make_comparison():
 if __name__ == '__main__':
     tmp = Path('tmp')
     tmp.mkdir(exist_ok=True)
-    download_and_unzip()
+    # download_and_unzip()
 
-    upscale_icon_set('icons')
-    make_variants('icons')
+    # upscale_icon_set('icons')
+    # make_variants('icons')
     make_preview('icons')
 
-    upscale_icon_set('icons-shadowless')
-    make_variants('icons-shadowless')
+    # upscale_icon_set('icons-shadowless')
+    # make_variants('icons-shadowless')
     make_preview('icons-shadowless')
 
-    make_preview('icons', mini_preview=True)
+    # make_preview('icons', mini_preview=True)
 
     make_comparison()
