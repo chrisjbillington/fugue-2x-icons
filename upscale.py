@@ -355,15 +355,13 @@ def make_preview(folder, mini_preview=False):
     COPYRIGHT_HEIGHT = 2 * 110
 
     if mini_preview:
-        N_ROWS = 11
-        N_COLS = 6
+        N_ROWS = 13
+        N_COLS = 5
         IMAGE_PADDING = 0
         RIGHT_CROP = 6
         BOTTOM_PADDING = 0
         output_file = f"mini-preview-{folder}-2x.png"
         icons = Path('mini-preview-icons.txt').read_text('utf8').splitlines()
-        # Make it a multiple of 4
-        # icons.remove('user-detective')
     else:
         N_ROWS = 150
         N_COLS = 24
@@ -467,7 +465,7 @@ def make_preview(folder, mini_preview=False):
                 'convert',
                 output_file,
                 '-crop',
-                f"{image.width//2}x{image.height}+0+0",
+                f"{int(3 / 5 * image.width)}x{image.height}+0+0",
                 '+repage',
                 lodpi_output_file,
             ]
@@ -480,6 +478,18 @@ def make_preview(folder, mini_preview=False):
                 '-background',
                 'white',
                 '-flatten',
+                lodpi_output_file,
+            ]
+        )
+        # Double the pixel density so on hidpi displays its blocky rather than blurry:
+        call(
+            [
+                'convert',
+                lodpi_output_file,
+                '-filter',
+                'box',
+                '-resize',
+                '200%',
                 lodpi_output_file,
             ]
         )
@@ -539,7 +549,7 @@ def make_comparison():
             '-background',
             'white',
             '-geometry',
-            '32x32+2+2',
+            '64x64+2+2',
             '-filter',
             'box',
             '-gravity',
@@ -547,12 +557,6 @@ def make_comparison():
             *icons,
             output_name,
         ]
-    )
-    # Make 2x scale version to show in README on hidpi screens:
-    hidpi_output_name = output_name.replace('.png', '-hidpi.png')
-    print(f"Making {hidpi_output_name}")
-    call(
-        ['convert', output_name, '-filter', 'box', '-resize', '200%', hidpi_output_name]
     )
 
 if __name__ == '__main__':

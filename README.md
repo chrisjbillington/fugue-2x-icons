@@ -8,6 +8,10 @@ This repository contains 32x32 upscaled versions of all original 16x16 Fugue ico
 such, these icons are appropriate for use at small sizes on high-DPI displays, e.g. at a
 size of 16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels.
 
+When downscaled to 16x16 physical pixels, these icons look near-identical to the
+original 16x16 Fugue icons, so one need not ship both 16x16 and 32x32 images if the UI
+toolkit can downscale them for low-DPI screens.
+
 The Fugue icon set is licensed under a [creative-commons attribution
 license](http://creativecommons.org/licenses/by/3.0/), and may be used with
 [attribution](https://p.yusukekamiyamane.com/icons/attribution/) to the author. If you
@@ -25,19 +29,28 @@ icons**](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/all-2x.pn
 
 ----------
 
-[<img src="./mini-preview-icons-2x.png" width="747"
-      srcset="./mini-preview-icons-2x-lodpi.png 1x ./mini-preview-icons-2x.png 2x"/>
+The below shows example icons at 16x16 logical pixels. This will be displayed by your
+browser with 32x32 physical pixels only if you are viewing this page at 2x DPI scaling
+and 100% zoom level. Otherwise they may appear with reduced detail or blurring.
+
+[<img src="./mini-preview-icons-2x.png" width="622"/>
   ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-icons-2x.png)
 
+The below shows some of the above icons at twice the scale (32x32 logical pixels), in
+order to show full detail if you are viewing this page with 1x DPI scaling. Otherwise,
+they may look pixelated.
+
+[<img src="./mini-preview-icons-2x-lodpi.png" width="746"/>
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/mini-preview-icons-2x-lodpi.png)
 
 Comparison
 ----------
 
-Here is an example showing some of the original 16x16 Fugue icons (shown at 2x scale)
-and their 32x32 upscaled equivalents:
+Here is an example showing some of the original 16x16 Fugue icons and their 32x32
+upscaled equivalents, all displayed at 32x32 logical pixels:
 
-[<img src="./comparison-hidpi.png" width="576"/>
-  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/comparison-hidpi.png)
+[<img src="./comparison.png" width="576"/>
+  ](https://github.com/chrisjbillington/fugue-2x-icons/raw/master/comparison.png)
 
 Why?
 ----
