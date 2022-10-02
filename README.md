@@ -8,9 +8,10 @@ This repository contains 32x32 upscaled versions of all original 16x16 Fugue ico
 such, these icons are appropriate for use at small sizes on high-DPI displays, e.g. at a
 size of 16x16 "logical" pixels with 2x scaling, equal to 32x32 physical pixels.
 
-When downscaled to 16x16 physical pixels, these icons look near-identical to the
-original 16x16 Fugue icons, so one need not ship both 16x16 and 32x32 images if the UI
-toolkit can downscale them for low-DPI screens.
+When rebinned to 16x16 physical pixels, these icons look near-identical to the original
+16x16 Fugue icons, so there is no need to ship both 16x16 and 32x32 images if the UI
+toolkit can rebin them for low-DPI screens (though downsampling that is not rebinning
+may not give acceptable results).
 
 The Fugue icon set is licensed under a [creative-commons attribution
 license](http://creativecommons.org/licenses/by/3.0/), and may be used with
