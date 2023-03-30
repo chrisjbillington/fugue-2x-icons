@@ -17,7 +17,7 @@ The Fugue icon set is licensed under a [creative-commons attribution
 license](http://creativecommons.org/licenses/by/3.0/), and may be used with
 [attribution](https://p.yusukekamiyamane.com/icons/attribution/) to the author. If you
 do not wish to provide attribution, you may [purchase a
-license](https://p.yusukekamiyamane.com/icons/license/).
+license](https://p.yusukekamiyamane.com/icon/license/).
 
 The code in this repository is licensed under the MIT license - see
 [`LICENSE-CODE.md`](LICENSE-CODE.md).
